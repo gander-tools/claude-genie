@@ -1,16 +1,18 @@
 FROM alpine:3.22
 
-RUN addgroup -g 1000 claude && \
+RUN apk add --no-cache bash curl libstdc++ libgcc && \
+    addgroup -g 1000 claude && \
     adduser -u 1000 -G claude -s /bin/bash -D claude && \
-    apk add --no-cache bash curl libstdc++ libgcc && \
-    mkdir -p /home/claude/.claude /workspace && \
-    echo {} > /home/claude/.claude.json && \
-    chown -R claude:claude /home/claude/.claude /workspace /home/claude/.claude.json
+    mkdir -p /home/claude/.local/bin /home/claude/.claude/ && \
+    echo '{}' > /home/claude/.claude.json && \
+    chown claude:claude -R /home/claude/
 
 USER claude
 
-WORKDIR /workspace
+ENV PATH="/home/claude/.local/bin:$PATH" SHELL="/bin/bash"
 
 RUN curl -fsSL https://claude.ai/install.sh | bash
+
+WORKDIR /workspace
 
 CMD ["/home/claude/.local/bin/claude", "--dangerously-skip-permissions"]
