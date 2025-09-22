@@ -7,7 +7,7 @@ RUN apk add --no-cache bash curl libstdc++ libgcc && \
     echo '{}' > /home/claude/.claude.json && \
     chown claude:claude -R /home/claude/
 
-VOLUME ["/home/claude/.claude/", "/home/claude/.claude.json"]
+VOLUME ["/home/claude/"]
 
 USER claude
 
