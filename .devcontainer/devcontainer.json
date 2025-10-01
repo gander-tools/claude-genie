@@ -1,0 +1,12 @@
+{
+  "name": "Claude Genie Container",
+  "image": "ghcr.io/gander-tools/claude-genie:latest",
+  "mounts": [
+    "source=${localWorkspaceFolderBasename}-home_claude,target=/home/claude/,type=volume"
+  ],
+  "runArgs": [
+    "--name=${localWorkspaceFolderBasename}-devcontainer"
+  ],
+  "workspaceFolder": "/workspace",
+  "remoteUser": "claude"
+}
