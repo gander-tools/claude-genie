@@ -10,8 +10,12 @@ USER claude
 
 ENV PATH="/home/claude/.local/bin:$PATH" SHELL="/bin/bash"
 
-RUN curl -fsSL https://claude.ai/install.sh | bash
+RUN mkdir -p /home/claude/.local/bin && \
+    curl -fsSL https://claude.ai/install.sh | bash && \
+    echo '#!/bin/bash' > /home/claude/.local/bin/claude-genie && \
+    echo '/home/claude/.local/bin/claude --dangerously-skip-permissions "$@"' >> /home/claude/.local/bin/claude-genie && \
+    chmod +x /home/claude/.local/bin/claude-genie
 
 WORKDIR /workspace
 
-CMD ["/home/claude/.local/bin/claude", "--dangerously-skip-permissions"]
+CMD ["/home/claude/.local/bin/claude-genie"]
