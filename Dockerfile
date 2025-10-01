@@ -1,5 +1,7 @@
 FROM alpine:3.22
 
+VOLUME ["/home/claude/"]
+
 RUN apk add --no-cache bash curl libstdc++ libgcc && \
     addgroup -g 1000 claude && \
     adduser -u 1000 -G claude -s /bin/bash -D claude
