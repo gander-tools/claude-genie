@@ -6,22 +6,35 @@ A Docker container for Claude development environment.
 
 ## Quick Start
 
-Run the container with the following command:
+First, create a named volume for Claude configuration:
+
+```bash
+docker volume create project_claude_home
+```
+
+Then run the container:
 
 ```bash
 docker run -it --rm \
-  -v ./project/workspace:/workspace \
-  -v ./project/config/.claude.json:/home/claude/.claude.json \
-  -v ./project/config/.claude:/home/claude/.claude \
-  --user $(id -u):$(id -g) \
+  -v .:/workspace \
+  -v project_claude_home:/home/claude \
   ghcr.io/gander-tools/claude-genie:latest
 ```
 
 ## Volume Mounts
 
-- `./project/workspace:/workspace` - Your project workspace directory
-- `./project/config/.claude.json:/home/claude/.claude.json` - Claude configuration file
-- `./project/config/.claude:/home/claude/.claude` - Claude configuration directory
+- `.:/workspace` - Your current directory as project workspace
+- `project_claude_home:/home/claude` - Named volume for Claude home directory (recommended for persistence)
+
+### What's in /home/claude?
+
+The `/home/claude` directory contains:
+- `.claude.json` - Claude CLI configuration (API keys, preferences)
+- `.claude/` - Claude state and session data
+- `.local/bin/` - Claude CLI binaries and wrapper scripts
+- `.bash_history` - Command history
+
+**Why preserve it?** Mounting this directory ensures your Claude configuration, authentication, and command history persist across container restarts.
 
 ## Notes
 

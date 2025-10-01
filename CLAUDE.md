@@ -27,22 +27,34 @@ The GitHub Actions workflow (`.github/workflows/docker-publish.yml`) automatical
 
 ## Running the Container
 
-Standard run command with volume mounts:
+First, create a named volume for Claude configuration:
+```bash
+docker volume create project_claude_home
+```
+
+Then run the container with volume mounts:
 ```bash
 docker run -it --rm \
-  -v ./project/workspace:/workspace \
-  -v ./project/config/.claude.json:/home/claude/.claude.json \
-  -v ./project/config/.claude:/home/claude/.claude \
+  -v .:/workspace \
+  -v project_claude_home:/home/claude \
   --user $(id -u):$(id -g) \
   ghcr.io/gander-tools/claude-genie:latest
 ```
 
 ## Volume Mounts
 
-- `/workspace` - Project workspace (required)
-- `/home/claude/.claude.json` - Claude config file (optional)
-- `/home/claude/.claude` - Claude config directory (optional)
-- `/home/claude/` - Persistent home directory via named volume (when using devcontainer)
+- `.:/workspace` - Current directory as project workspace (required)
+- `project_claude_home:/home/claude` - Named volume for Claude home directory (recommended for persistence)
+
+### Claude Home Directory Contents
+
+The `/home/claude` directory contains:
+- `.claude.json` - Claude CLI configuration (API keys, preferences)
+- `.claude/` - Claude state and session data
+- `.local/bin/` - Claude CLI binaries and wrapper scripts (`claude`, `claude-genie`)
+- `.bash_history` - Command history
+
+Mounting this directory ensures configuration, authentication, and command history persist across container restarts. When using the devcontainer, a named volume is automatically created for this purpose.
 
 ## Development Container
 
